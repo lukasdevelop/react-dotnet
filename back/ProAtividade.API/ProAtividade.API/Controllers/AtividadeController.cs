@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProAtividade.API.Data;
 using ProAtividade.API.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ProAtividade.API.Controllers
 {
@@ -7,30 +11,64 @@ namespace ProAtividade.API.Controllers
     [Route("api/[controller]")]
     public class AtividadeController : ControllerBase
     {
-        [HttpGet]
-        public Atividade get()
+        private readonly DataContext _context;
+
+        public AtividadeController(DataContext context)
         {
+            this._context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Atividade> Get()
+        {
+            return _context.Atividades;
+        }
+
+        [HttpGet("{id}")]
+        public Atividade Get(int id)
+        {
+            return _context.Atividades.FirstOrDefault(ati => ati.Id == id);
+        }
+
+        [HttpPost]
+        public IEnumerable<Atividade> Post(Atividade atividade)
+        {
+            _context.Atividades.Add(atividade);
+
+            if(_context.SaveChanges () > 0)
+            {
+                return _context.Atividades;
+            }else
+            {
+                throw new Exception("Erro ao salvar dados.");
+            }
+        }
+        [HttpPut("{id}")]
+        public Atividade Put(int id, Atividade atividade)
+        {
+            if (atividade.Id != id) throw new Exception("Você está tentando atualizar a atividade errada.");
+
+            _context.Update(atividade);
+
+            if(_context.SaveChanges() > 0)
+            {
+                return _context.Atividades.FirstOrDefault(ativ => ativ.Id == id);
+            }
             return new Atividade();
         }
-        [HttpGet("{id}")]
-        public string get(int id)
+        [HttpDelete("{id}")]
+        public bool Delete(int id)
         {
-            return $"Minha controler {id}";
-        }
-        [HttpPost]
-        public Atividade post(Atividade atividade)
-        {
-            return atividade;
-        }
-        [HttpPut]
-        public string put()
-        {
-            return "Minha controler";
-        }
-        [HttpDelete]
-        public string delete()
-        {
-            return "Minha controler";
+            var atividade = _context.Atividades.FirstOrDefault(ati => ati.Id == id);
+
+            if(atividade == null)
+            {
+                throw new Exception("Você está tentando deletar uma atividade que não existe.");
+            }
+
+            _context.Remove(atividade);
+
+            return _context.SaveChanges() > 0;
         }
     }
 }
