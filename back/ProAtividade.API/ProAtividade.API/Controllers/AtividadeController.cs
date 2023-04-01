@@ -31,13 +31,13 @@ namespace ProAtividade.API.Controllers
         }
 
         [HttpPost]
-        public IEnumerable<Atividade> Post(Atividade atividade)
+        public Atividade Post(Atividade activite)
         {
-            _context.Atividades.Add(atividade);
+            _context.Atividades.Add(activite);
 
             if(_context.SaveChanges () > 0)
             {
-                return _context.Atividades;
+                return _context.Atividades.FirstOrDefault(act => act.Id == activite.Id);
             }else
             {
                 throw new Exception("Erro ao salvar dados.");

@@ -4,11 +4,11 @@ export default function Atividade(props) {
 
   function prioridadeDeStyle(param){
     switch( param ) {
-      case "1":
+      case "Baixa":
         return 'success';
-        case "2":
+        case "Normal":
           return 'dark';
-          case "3":
+          case "Alta":
             return 'warning';
             default:
               return 'not-found';
@@ -17,11 +17,11 @@ export default function Atividade(props) {
 
   function prioridadeDeLabel(param) {
     switch (param) {
-      case "1":
+      case "Baixa":
         return "Baixa";
-      case "2":
+      case "Normal":
         return "Normal";
-      case "3":
+      case "Alta":
         return "Alta";
       default:
         return "Não definido";
@@ -39,12 +39,12 @@ export default function Atividade(props) {
               <span className={'ms-1 text-' + prioridadeDeStyle(props.ativ.prioridade)}> Prioridade: {prioridadeDeLabel(props.ativ.prioridade)}</span>
             </h6>
           </div>
-          <p className="card-text">{props.ativ.description}</p>
+          <p className="card-text">{props.ativ.descricao}</p>
           <div className="d-flex justify-content-end pt-2 m-0 border-top">
             <button className="btn btn-sm btn-outline-primary me-2" onClick={() => props.pegarAtividade(props.ativ.id)}>
               Editar
             </button>
-            <button className="btn btn-sm btn-outline-danger" onClick={() => props.deletarAtividade(props.ativ.id)}>
+            <button className="btn btn-sm btn-outline-danger" onClick={() => props.toggleShowConfirmModal(props.ativ.id)}>
               Deletar
             </button>
           </div>
